@@ -1,24 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
-const Joi = require('joi');
-
-const genreSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        minlength: 1,
-        maxlength: 255
-    }
-});
-const Genre = mongoose.model('Genre', genreSchema);
-
-//var genres = [
-//    {id: 1, name: 'horror'},
-//    {id: 2, name: 'drama'},
-//    {id: 3, name: 'action'},
-//    {id: 4, name: 'advanture'}
-//];
+const { Genre, validate } = require('../models/genre'); // object de-structure
 
 // GET
 // all genres
@@ -37,7 +19,7 @@ router.get('/:id', async (req, res) => {
 
 // POST
 router.post('/', async (req, res) => {
-    let { error } = validateGenre(req.body);
+    let { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
     let genre = new Genre({ name: req.body.name });
@@ -45,18 +27,10 @@ router.post('/', async (req, res) => {
     res.send(genre);
 });
 
-function validateGenre(genre) {
-    // Joi schema
-    const schema = {
-        name: Joi.string().min(1).required()
-    };
-    return Joi.validate(genre, schema);
-}
-
 // PUT
 router.put('/:id', async (req, res) => {
     // validate
-    let { error } = validateGenre(req.body);
+    let { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
     // use update first method

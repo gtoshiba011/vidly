@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-const Joi = require('joi');
 const genres = require('./routes/genres');
+const customers = require('./routes/customers');
 const dbDebugger = require('debug')('app:db');
 
 const mongoose = require('mongoose');
@@ -13,6 +13,7 @@ mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
 // middleware function
 app.use(express.json());
 app.use('/api/genres', genres);
+app.use('/api/customers', customers);
 
 // GET
 // homepage
