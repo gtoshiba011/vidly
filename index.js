@@ -2,6 +2,13 @@ const express = require('express');
 const app = express();
 const Joi = require('joi');
 const genres = require('./routes/genres');
+const dbDebugger = require('debug')('app:db');
+
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
+    .then(() => dbDebugger('Connected to MongoDB...'))
+    .catch(err => dbDebugger('Fail to connect to MongoDB...', err));
+
 
 // middleware function
 app.use(express.json());
