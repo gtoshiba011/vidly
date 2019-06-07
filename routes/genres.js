@@ -44,7 +44,7 @@ router.put('/:id', async (req, res) => {
 // DELETE
 router.delete('/:id', async (req, res) => {
 
-    const genre = await Genre.findByIdAndRemove(req.params.id);
+    const genre = await Genre.findByIdAndRemove(req.params.id, { useFindAndModify: false });
 
     if(!genre) return res.status(404).send(`Genre ID ${req.params.id} cannot find`); 
 

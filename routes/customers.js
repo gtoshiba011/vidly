@@ -48,7 +48,7 @@ router.put('/:id', async (req, res) => {
 // DELETE
 router.delete('/:id', async (req, res) => {
 
-    const customer = await Customer.findByIdAndRemove(req.params.id);
+    const customer = await Customer.findByIdAndRemove(req.params.id, { useFindAndModify: false });
 
     if(!customer) return res.status(404).send(`Customer ID ${req.params.id} cannot find`); 
 
