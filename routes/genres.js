@@ -7,12 +7,12 @@ const { Genre, validateGenre } = require('../models/genre'); // object de-struct
 // GET
 // all genres
 router.get('/', async (req, res) => {
+    // throw new Error('Could not get genres.');
     const genres = await Genre.find().sort('name');
     res.send(genres);
 });
 // by id
 router.get('/:id', async (req, res) => {
-
     const genre = await Genre.findById(req.params.id);
 
     if(!genre) return res.status(404).send(`Genre ID ${req.params.id} cannot find`);

@@ -1,35 +1,21 @@
-const config = require('config');
-const Joi = require('Joi');
-Joi.objectId = require('joi-objectid')(Joi); // return a function
+const winston = require('winston');
 const express = require('express');
 const app = express();
-const genres = require('./routes/genres');
-const customers = require('./routes/customers');
-const movies = require('./routes/movies');
-const rentals = require('./routes/rentals');
-const users = require('./routes/users');
-const auth = require('./routes/auth');
 const dbDebugger = require('debug')('app:db');
 
-if(!config.get('jwtPrivateKey')) {
-    console.error('FATAL ERROR: env variable jwtPrivateKey is not defined');
-    process.exit(1);
-}
+// *** call startup function
+require('./startup/routes')(app);
+require('./startup/db')();
+require('./startup/logging')();
+require('./startup/config')();
+require('./startup/validate')();
 
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
-    .then(() => dbDebugger('Connected to MongoDB...'))
-    .catch(err => dbDebugger('Fail to connect to MongoDB...', err));
-
-
-// middleware function
-app.use(express.json());
-app.use('/api/genres', genres);
-app.use('/api/customers', customers);
-app.use('/api/movies', movies);
-app.use('/api/rentals', rentals);
-app.use('/api/users', users);
-app.use('/api/auth', auth);
+// *** test - throw an Error
+// 1. can be caught by process.on('uncaughtException')
+//throw new Error('Something wrong when starting...');
+// 2. cannot be caught by porcess.on('uncaughtException')
+//const p = Promise.reject(new Error('Async error'));
+//p.then(() => console.log('Done'));
 
 // GET
 // homepage
@@ -40,5 +26,5 @@ app.get('/', (req, res) => {
 // router listen...
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`Now listening on port ${port}...`);
+    winston.info(`Now listening on port ${port}...`);
 });
