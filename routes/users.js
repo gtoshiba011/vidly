@@ -1,3 +1,4 @@
+const auth = require('../middleware/auth');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
@@ -26,7 +27,10 @@ router.post('/', async (req, res) => {
 
     // do not show password to user
     // use lodash
-    res.send(_.pick(user, ['_id', 'name', 'email']))
+    //const token = jwt.sign({ _id: user._id }, config.get('jwtPrivateKey'));
+    const token = user.generateAuthToken();
+    // set the responds header
+    res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
     //res.send({
     //    name: user.name,
     //    email: user.email
@@ -34,6 +38,10 @@ router.post('/', async (req, res) => {
 });
 
 //// GET
+router.get('/me', auth, async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password');
+    res.send(user);
+});
 //// all users
 //router.get('/', async (req, res) => {
 //    const users = await User.find().sort('name');
