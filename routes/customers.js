@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Customer, validate } = require('../models/customer'); // object de-structure
+const { Customer, validateCustomer } = require('../models/customer'); // object de-structure
 
 // GET
 // all genres
@@ -19,7 +19,7 @@ router.get('/:id', async (req, res) => {
 
 // POST
 router.post('/', async (req, res) => {
-    let { error } = validate(req.body);
+    let { error } = validateCustomer(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
     let customer = new Customer({
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 // PUT
 router.put('/:id', async (req, res) => {
     // validate
-    let { error } = validate(req.body);
+    let { error } = validateCustomer(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
     // use update first method

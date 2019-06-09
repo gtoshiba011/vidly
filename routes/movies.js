@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Movie, validate } = require('../models/movie');
+const { Movie, validateMovie } = require('../models/movie');
 const { Genre } = require('../models/genre');
 
 // GET
@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
 
 // POST
 router.post('/', async (req, res) => {
-    let { error } = validate(req.body);
+    let { error } = validateMovie(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
     const genre = await Genre.findById(req.body.genreId);
@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
 // PUT
 router.put('/:id', async (req, res) => {
     // validate
-    let { error } = validate(req.body);
+    let { error } = validateMovie(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
     // use update first method
